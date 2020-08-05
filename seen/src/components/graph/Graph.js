@@ -46,6 +46,8 @@ function toData(data) {
     let nodes = [];
     let i = 0;
     let aux;
+    let distlink = 0;
+    let wifiop = true;
 
     data.forEach((Ap) => {
         if (Ap.devices != null) {
@@ -54,7 +56,7 @@ function toData(data) {
                 isAp: true,
                 parent: null,
                 mac: Ap.mac,
-                radius: 17,
+                radius: 35,
                 color: '263238',
                 status: 'Normal',
                 prevStatus: '',
@@ -63,23 +65,37 @@ function toData(data) {
             })
             aux = i;
             i += 1;
+            
             Ap.devices.forEach((assoc) => {
+            distlink =240;
+             if(Math.random()<0.5){
+                 distlink = 120;
+            }
+            wifiop = true
+            if(Math.random()<0.5){
+                wifiop = false;
+           }
+            console.log(distlink);
+            console.log("foi");
                 nodes.push({
                     id: i,
                     isAp: false,
                     parent: aux,
                     mac: assoc.mac,
-                    radius: 10,
-                    color: 'white',
+                    radius: 30,
+                    color: '001484',
                     status: 'Normal',
                     prevStatus: '',
                     underAttack: false,
                     img: StaUrl,
                     type: assoc.dispositiveType
                 })
+
                 links.push({ // Sintaxe utilizada pelo d3 para criar as arestas
                     source: i,
-                    target: aux
+                    target: aux,
+                    distance: distlink,
+                    wifi : wifiop
                 })
                 i += 1;
             })
@@ -126,7 +142,7 @@ class Graph extends Component {
         // var data = toData(this.state.Aps);
         // var nodes = data.nodes;
         // var links = data.links;
-
+        console.log(Math.random);
         var nodes = this.state.Nodes;
         var links = this.state.Links;
 
@@ -144,8 +160,8 @@ class Graph extends Component {
             .style('border', '1px solid black')
 
         var simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).links(links).distance(60))
-            .force("charge", d3.forceManyBody().strength(-150))
+            .force("link", d3.forceLink(links).id(d => d.id).links(links).distance(d => d.distance))
+            .force("charge", d3.forceManyBody().strength(-1000))
             .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
             .force("x", d3.forceX())
             .force("y", d3.forceY())
@@ -158,6 +174,18 @@ class Graph extends Component {
         var node = d3.select('svg').append('g')
             .attr('class', 'nodes')
             .selectAll('circle')
+
+            
+            var defs = d3.select('svg').append("defs").attr("id", "imgdefs")
+
+            var catpattern = defs.append("pattern")
+            .attr("id", "catpattern")
+            .attr("height", 1)
+            .attr("width", 1)
+            .attr("x", "0")
+            .attr("y", "0")
+
+            
 
         updateGraph(this.state.Nodes, this.state.Links)
 
@@ -185,11 +213,25 @@ class Graph extends Component {
 
             node = node.data(nodes, d => d.id);
             node.exit().remove();
+            
+            
+            catpattern.append("image")
+     .attr("x", 16)
+     .attr("y",16)
+     .attr("height", 32)
+     .attr("width", 32)
+     .attr("xlink:href", "https://github.com/favicon.ico")
 
             node = node.enter()
-                .append('circle')
+               .append('circle')
+              //    .append('image') 
                 .attr('r', d => d.radius)
-                .attr('fill', d => d.color)
+                .attr('fill', "grey")
+                .attr('fill', "url(#catpattern)")   
+
+                .style("stroke", d => d.color)
+                .attr('stroke-width', 5)
+                //.attr("xlink:href", 'http://localhost:3000/static/media/iotflowslogo.5cbcaa1c.jpg')
                 .on("mouseover", function (d) {  
                     d3.select(this)
                         .transition()
@@ -228,17 +270,20 @@ class Graph extends Component {
 
 
             link = link.data(links);
-            link.exit().remove();
-
-            link = link.enter()
-            .append('line')
-            .attr('stroke-width', 3)
-            .style('stroke', 'white')
-            .merge(link);
+            link.exit().remove();           
+                link = link.enter()
+                .append('line')
+                .attr('stroke-width', 3)
+                .style('stroke', '#001484')
+                .attr("stroke-dasharray", function(d) { 
+                    return (d.wifi===true) ? "6,6" : "1,0"; })
+                .merge(link);
+            
+            
 
             simulation.nodes(nodes)
-                .force("link", d3.forceLink(links).id(d => d.id).links(links).distance(60))
-                .force("charge", d3.forceManyBody().strength(-150))
+                .force("link", d3.forceLink(links).id(d => d.id).links(links).distance(d => d.distance))
+                .force("charge", d3.forceManyBody().strength(-1000))
                 .force('center', d3.forceCenter(WIDTH / 2, HEIGHT / 2))
             
             simulation.alpha(1).restart();
@@ -295,12 +340,12 @@ class Graph extends Component {
             // Updating nodes in d3
             Events.forEach(event => {
                 node.filter(d => d.mac === event.targetAddrMac)
-                .attr('fill', d => {
+                .style('stroke', d => {
                     if(event.eventType === 'Normal') {
                         if(d.isAp) {
                             return '#263238'
                         } else {
-                            return 'white'
+                            return 'blue'
                         }
                     } else {
                         let c = d3.color(colorMapping[event.eventType]);
