@@ -4,12 +4,41 @@ import apis from '../../api/index';
 
 // Importa o objeto que contem os macs;
 const macMap = require('../../mac.json');
+const logo = require('../../assets/001-wifi.png')
 
 const _ = require('lodash')
 const d3 = require('d3');
 
-const APUrl = "https://img.icons8.com/dusk/64/000000/cisco-router.png";
-const StaUrl = "https://img.icons8.com/ios-filled/100/000000/smartphone.png";
+const Img =[
+    { 
+        nome: "Git",
+        i:0,
+        url: "https://github.com/favicon.ico",
+        id: "url(#ImgPattern0)",
+        x: 32,
+        y: 32
+
+    }, 
+    { 
+        nome: "AP",
+        i:1,
+        url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABGCAIAAAGJS0VFAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9bS4tUBO0g4pChCoIFURFHrUIRKoRaoVUHk0u/oElDkuLiKLgWHPxYrDq4OOvq4CoIgh8gTo5Oii5S4v+SQosYD4778e7e4+4d4G9UmGp2jQOqZhnpZELI5laF0CvCCKIPowhIzNTnRDEFz/F1Dx9f7+I8y/vcn6NHyZsM8AnEs0w3LOIN4ulNS+e8TxxlJUkhPiceM+iCxI9cl11+41x02M8zo0YmPU8cJRaKHSx3MCsZKvEUcUxRNcr3Z11WOG9xVis11ronf2Ekr60sc53mEJJYxBJECJBRQxkVWIjTqpFiIk37CQ//oOMXySWTqwxGjgVUoUJy/OB/8LtbszA54SZFEkDwxbY/hoHQLtCs2/b3sW03T4DAM3Cltf3VBjDzSXq9rcWOgN5t4OK6rcl7wOUOMPCkS4bkSAGa/kIBeD+jb8oB/bdA95rbW2sfpw9AhrpK3QAHh8BIkbLXPd4d7uzt3zOt/n4AJbZyiNdD894AAAAGYktHRADAAMAAwBqdB1QAAAAJcEhZcwJ169gCdevYARWevuEAAAAHdElNRQfkCAUTAAq4GrzwAAABy0lEQVRo3u1a2bLDIAhNHD+MT+fT7oOdjNcVcYm2h4dOY0LgIMjS3sx8ZchcefrcIyJ/1V0K+JJ0MzMRxRoRUYnvKmC4lfdqGJLAO7HHq84aJhZTx87MWuxSCAltMneNgqdisIo/tMJjZutfOE1yDvlPVZ20ERsgJ400s0g9jXOcgWfytup9vIkz3B//sw1PRWyTVi7q2uzmdN7Zd5SnwrqD5DRJEmctu0uS90esB0mKyNU5W/W0ewoR25kGuuqvOAUQUSFQ/LsP1a03FpNvPTPJdPHb7mQjo5Zd4P3GrIFMCEl71RHqc73AawqnfU+mgEdAEiRBkirnzihgg7rFTCrBYnq1Wn4nPwU190jrBTnGTzaF4X2SsS7Jf+PzpTCSDRZzO12ZTflsnc5iyw4zy8uHh5Svt12AJt0BTGqe0GtA0ovd5xcaD5AACZAGDA46c3aTXCtPo36XsOac1MlFLAESIAESIAESIAHSuPHDKRRAsJKHtqXkBtimp3feHGklvud2af4OKO9b5IvLSN8vyRebrB788BtfKk+8eGaffK98cVJrmLSa7YlF+SJS7cxYOjHzmnOR5JSsz8RznLNjRi0XY35AAiRA+h1IfyB6SZN1tjaOAAAAAElFTkSuQmCC",
+        id: "url(#ImgPattern1)",
+        x: 30,
+        y: 30
+
+    },
+    { 
+        nome: "Laptop",
+        i:2,
+        url: "data:image/png;base64,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",
+        id: "url(#ImgPattern2)",
+        x: 30,
+        y: 30
+
+    }
+    
+]
 
 const WIDTH = 1920 * 0.95;
 const HEIGHT = 1080 * 0.95;
@@ -61,7 +90,8 @@ function toData(data) {
                 status: 'Normal',
                 prevStatus: '',
                 underAttack: false,
-                img: APUrl
+                img: Img.find(d => d.nome === 'AP')
+
             })
             aux = i;
             i += 1;
@@ -87,7 +117,7 @@ function toData(data) {
                     status: 'Normal',
                     prevStatus: '',
                     underAttack: false,
-                    img: StaUrl,
+                    img: Img.find(d => d.nome === 'Laptop'),
                     type: assoc.dispositiveType
                 })
 
@@ -169,22 +199,25 @@ class Graph extends Component {
 
         var link = d3.select('svg').append('g')
             .attr('class', 'links')
-            .selectAll('line')
+            .selectAll('line');
 
         var node = d3.select('svg').append('g')
             .attr('class', 'nodes')
-            .selectAll('circle')
+            .selectAll('circle');
 
             
-            var defs = d3.select('svg').append("defs").attr("id", "imgdefs")
+        var defs = d3.select('svg').append("defs")
 
-            var catpattern = defs.append("pattern")
-            .attr("id", "catpattern")
+            /*
+            var ImgPattern3  = [
+                ImgPattern = defs.append("pattern")
+            .attr("id", "ImgPattern1")
             .attr("height", 1)
             .attr("width", 1)
             .attr("x", "0")
-            .attr("y", "0")
-
+            .attr("y", "0"),
+            ] */
+           
             
 
         updateGraph(this.state.Nodes, this.state.Links)
@@ -213,60 +246,71 @@ class Graph extends Component {
 
             node = node.data(nodes, d => d.id);
             node.exit().remove();
+
             
+           
+
+
+            nodes.forEach(function(d,i){
+                var defs1 = d3.select('svg').append("defs");
+                var ImgPattern = defs1.append("pattern")
+                .attr("id", "ImgPattern"+d.img.i)
+                .attr("width", 1)
+                .attr("height", 1)
+                .attr("x", "0")
+                .attr("y", "0");
+                
+                ImgPattern.append("image")
+                .attr("x", d.img.x/2)
+                .attr("y",d.img.y/2)
+                .attr("width", d.img.x)
+                .attr("height", d.img.y)
+                .attr("href", d.img.url)
+    
+                node = node.enter()
+                   .append('circle')
+                    .attr('r', d => d.radius)
+                    .style('fill', "grey")
+                    .style('fill', d => d.img.id)
+                    .style("stroke", d => d.color)
+                    .attr('stroke-width', 5)
+                    .on("mouseover", function (d) {  
+                        d3.select(this)
+                            .transition()
+                            .duration(500)
+                            .style("cursor", "pointer")
+                            .attr("width", 60)
+                        myTool.transition()
+                            .duration(500)
+                            .style('opacity', '1')
+                            .style('display', 'block');
+    
+                        myTool
+                            .html(
+                                "<div id ='teste' >Mac: " + d.mac + 
+                                "<br>Manufacturer: " + (macMap[d.mac.substring(0, 8)] === undefined ? "Not found." : macMap[d.mac.substring(0, 8)]) + // Se o MAC por algum motivo nao existir, vai exibir o Not found;
+                                "<br>Type: " + (d.type === undefined? "Not registered" : d.type) +
+                                "<br>Status: " + d.status + "</div>"
+                            )
+                            .style("left", (d3.event.pageX - 90) + "px")
+                            .style("top", (d3.event.pageY - 90) + "px")
+                    })
+                    .on("mouseout", function (d) {  //Mouse event
+                        d3.select(this)
+                            .transition()
+                            .duration(500)
+                            .style("cursor", "normal")
+                            .attr("width", 40)
+                        myTool
+                            .transition()  //Opacity transition when the tooltip disappears
+                            .duration(500)
+                            .style("opacity", "0")
+                            .style("display", "none")  //The tooltip disappears
+                    })
+                    .merge(node);
+    
+            }) 
             
-            catpattern.append("image")
-     .attr("x", 16)
-     .attr("y",16)
-     .attr("height", 32)
-     .attr("width", 32)
-     .attr("xlink:href", "https://github.com/favicon.ico")
-
-            node = node.enter()
-               .append('circle')
-              //    .append('image') 
-                .attr('r', d => d.radius)
-                .attr('fill', "grey")
-                .attr('fill', "url(#catpattern)")   
-
-                .style("stroke", d => d.color)
-                .attr('stroke-width', 5)
-                //.attr("xlink:href", 'http://localhost:3000/static/media/iotflowslogo.5cbcaa1c.jpg')
-                .on("mouseover", function (d) {  
-                    d3.select(this)
-                        .transition()
-                        .duration(500)
-                        .style("cursor", "pointer")
-                        .attr("width", 60)
-                    myTool.transition()
-                        .duration(500)
-                        .style('opacity', '1')
-                        .style('display', 'block');
-
-                    myTool
-                        .html(
-                            "<div id ='teste' >Mac: " + d.mac + 
-                            "<br>Manufacturer: " + (macMap[d.mac.substring(0, 8)] === undefined ? "Not found." : macMap[d.mac.substring(0, 8)]) + // Se o MAC por algum motivo nao existir, vai exibir o Not found;
-                            "<br>Type: " + (d.type === undefined? "Not registered" : d.type) +
-                            "<br>Status: " + d.status + "</div>"
-                        )
-                        .style("left", (d3.event.pageX - 90) + "px")
-                        .style("top", (d3.event.pageY - 90) + "px")
-                })
-                .on("mouseout", function (d) {  //Mouse event
-                    d3.select(this)
-                        .transition()
-                        .duration(500)
-                        .style("cursor", "normal")
-                        .attr("width", 40)
-                    myTool
-                        .transition()  //Opacity transition when the tooltip disappears
-                        .duration(500)
-                        .style("opacity", "0")
-                        .style("display", "none")  //The tooltip disappears
-                })
-                .merge(node);
-
 
 
             link = link.data(links);
