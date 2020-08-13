@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Ap = require('../models/Ap')
-
+var _ = require('underscore');
 // Get all APs
 router.get('/', (req, res) => {
     Ap.find()
@@ -93,17 +93,22 @@ router.put('/:mac', (req, res) => {
     });
 });
 
-// Edit device;
-router.put('/:mac/:dmac', (req, res) => {
-    Ap.updateOne({ "mac": req.params.mac,  "devices.mac": req.params.dmac }, {
-        $set: {
-            "devices.$.ip": req.body.ip,
-            "devices.$.manufacturer": req.body.manufacturer,
-            "devices.$.dispositiveType": req.body.dispositiveType,
-            "devices.$.dispositiveType": req.body.dispositiveType,
-            "devices.$.firmware": req.body.firmware
-            //TO DO INSET BLOCKED AND THE CHOOSE TO NOT INSERT NULL
+function onlyNotEmpty(req, res, next) {
+    const out = {};
+    _(req.body).forEach((value, key) => {
+        if (!_.isEmpty(value)&& key != 'apmac' && key !='dmac') {
+            out["devices.$."+key] = value;
         }
+    });
+
+    req.bodyNotEmpty = out;
+    next();
+}
+
+// Edit device;
+router.put('/:apmac/:dmac', onlyNotEmpty, (req, res) => {
+    Ap.updateOne({ "mac": req.params.apmac,  "devices.mac": req.params.dmac }, {
+        $set:  req.bodyNotEmpty 
     })
     .then(data => {
         res.json({ msg: 'Device updated' })
@@ -112,7 +117,6 @@ router.put('/:mac/:dmac', (req, res) => {
         res.status(400).json({ msg: 'Device not found' })
     });
 });
-
 // Delete AP;
 router.delete('/:mac', (req, res) => {
     Ap.deleteOne({ mac: req.params.mac }, (err, result) => {

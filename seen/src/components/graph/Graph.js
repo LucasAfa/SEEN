@@ -348,7 +348,7 @@ class Graph extends Component {
                     }).on('contextmenu', d3contextMenuLib(menu)) // attach menu to element
                     .on("click", function(d){
                         // TODO MODIFI IN THE CONEXT MENU
-                        apis.editdevice({"_id":"5e8df6e041f17b070e267989","dmac":"C4:6A:B7:88:AA:44","manufacturer":"Xiaomi","dispositiveType":"Thermostatt","mac":"FF:FF:FF:FF:FF:F8"})
+                        apis.editdevice({"dmac":"C4:6A:B7:88:AA:44","manufacturer":"Xiaomi","dispositiveType":"Thermostat","apmac":"FF:FF:FF:FF:FF:F8"})
                     })                    
                     .merge(node);
     
