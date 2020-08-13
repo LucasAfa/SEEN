@@ -16,6 +16,7 @@ export const getAllEvents = () => api.get(`/events`)
 export const getEventById = id => api.get(`/events/${id}`)
 export const getAllAps = () => api.get('/aps')
 export const getApByMac = mac => api.get(`/aps/${mac}`)
+export const editdevice = payload => api.put(`/aps/${payload.mac}/${payload.dmac}`, payload)
 
 
 const apis = {
@@ -23,7 +24,8 @@ const apis = {
     getAllEvents,
     getEventById,
     getAllAps,
-    getApByMac
+    getApByMac,
+    editdevice
 }
 
 export default apis

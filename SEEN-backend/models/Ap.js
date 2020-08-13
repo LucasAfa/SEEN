@@ -14,6 +14,10 @@ const DeviceSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    userdispositiveType: {
+        type: String,
+        required: false
+    },
     ip: {
         type: String,
         required: false,

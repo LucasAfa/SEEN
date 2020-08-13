@@ -100,7 +100,9 @@ router.put('/:mac/:dmac', (req, res) => {
             "devices.$.ip": req.body.ip,
             "devices.$.manufacturer": req.body.manufacturer,
             "devices.$.dispositiveType": req.body.dispositiveType,
+            "devices.$.dispositiveType": req.body.dispositiveType,
             "devices.$.firmware": req.body.firmware
+            //TO DO INSET BLOCKED AND THE CHOOSE TO NOT INSERT NULL
         }
     })
     .then(data => {
