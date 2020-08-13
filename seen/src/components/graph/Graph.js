@@ -20,7 +20,9 @@ const Img =[
         id: "url(#ImgPattern0)",
         x: 32,
         y: 32,
-        action: function() {}
+        action: function(d) {
+            apis.editdevice({"dmac":d.mac,"dispositiveType":"Not registered","apmac":d.apmac})
+        }
 
 
     }, 
@@ -31,7 +33,9 @@ const Img =[
         id: "url(#ImgPattern1)",
         x: 30,
         y: 30,
-        action: function() {}
+        action: function(d) {
+            apis.editdevice({"dmac":d.mac,"dispositiveType":"AP","apmac":d.apmac})
+        }
 
     },
     { 
@@ -41,7 +45,9 @@ const Img =[
         id: "url(#ImgPattern2)",
         x: 30,
         y: 30,
-        action: function() {}
+        action: function(d) {
+            apis.editdevice({"dmac":d.mac,"dispositiveType":"Lamp","apmac":d.apmac})
+        }
 
     },
     {
@@ -51,7 +57,9 @@ const Img =[
         id: "url(#ImgPattern3)",
         x: 30,
         y: 30,
-        action: function() {}
+        action: function(d) {
+            apis.editdevice({"dmac":d.mac,"dispositiveType":"Thermostat","apmac":d.apmac})
+        }
     }
     
 ]
@@ -127,6 +135,7 @@ function toData(data) {
                     id: i,
                     isAp: false,
                     parent: aux,
+                    apmac: Ap.mac,
                     mac: assoc.mac,
                     radius: 30,
                     color: '001484',
@@ -347,8 +356,7 @@ class Graph extends Component {
                             .style("display", "none")  //The tooltip disappears
                     }).on('contextmenu', d3contextMenuLib(menu)) // attach menu to element
                     .on("click", function(d){
-                        // TODO MODIFI IN THE CONEXT MENU
-                        apis.editdevice({"dmac":"C4:6A:B7:88:AA:44","manufacturer":"Xiaomi","dispositiveType":"Thermostat","apmac":"FF:FF:FF:FF:FF:F8"})
+                        //apis.editdevice({"dmac":"C4:6A:B7:88:AA:44","manufacturer":"Xiaomi","dispositiveType":"Thermostat","apmac":"FF:FF:FF:FF:FF:F8"})
                     })                    
                     .merge(node);
     
