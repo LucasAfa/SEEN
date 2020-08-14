@@ -305,11 +305,15 @@ class Graph extends Component {
                         children: [
                             {
                                 title: 'Ban',
-                                action: function() {}
+                                action: function(d) {
+                                    apis.editdevice({"dmac":d.mac,"ban":true,"apmac":d.apmac})
+                                }
                             },
                             {
                                 title: 'UnBan',
-                                action: function() {}
+                                action: function(d) {
+                                    apis.editdevice({"dmac":d.mac,"ban":false,"apmac":d.apmac})
+                                }
                             },
                         ]
                     },

@@ -96,7 +96,8 @@ router.put('/:mac', (req, res) => {
 function onlyNotEmpty(req, res, next) {
     const out = {};
     _(req.body).forEach((value, key) => {
-        if (!_.isEmpty(value)&& key != 'apmac' && key !='dmac') {
+        console.log(value)
+        if (!(value==null)&& key != 'apmac' && key !='dmac') {
             out["devices.$."+key] = value;
         }
     });
@@ -107,6 +108,7 @@ function onlyNotEmpty(req, res, next) {
 
 // Edit device;
 router.put('/:apmac/:dmac', onlyNotEmpty, (req, res) => {
+    console.log(req.bodyNotEmpty)
     Ap.updateOne({ "mac": req.params.apmac,  "devices.mac": req.params.dmac }, {
         $set:  req.bodyNotEmpty 
     })

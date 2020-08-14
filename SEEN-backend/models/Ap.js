@@ -18,6 +18,10 @@ const DeviceSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    ban: {
+        type: Boolean,
+        required: false
+    },
     ip: {
         type: String,
         required: false,
