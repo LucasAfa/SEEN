@@ -22,6 +22,10 @@ const DeviceSchema = mongoose.Schema({
         type: Boolean,
         required: false
     },
+    wireless: {
+        type: Boolean,
+        required: false
+    },
     ip: {
         type: String,
         required: false,
