@@ -22,6 +22,7 @@ app.use(cors());
 // Routes
 app.use('/aps', require('./routes/aps'));
 app.use('/events', require('./routes/events'));
+app.use('/devices', require('./routes/devices'));
 
 
 const PORT = process.env.PORT || 5000;

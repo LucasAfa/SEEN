@@ -31,7 +31,8 @@ export default class EventList extends Component {
 
         const { Events, Aps } = this.props;
         const macTypeMap = getTypeMap(Aps);
-
+        console.log(Events)
+        console.log(Aps)
         const listEvents = Events.splice(0).reverse().map(event => (
             <EventCard key={event.timestamp} event={event} type={macTypeMap[event.targetAddrMac]} />))
 

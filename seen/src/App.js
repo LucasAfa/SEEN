@@ -8,6 +8,7 @@ import Toolbar from './components/toolbar/toolbar';
 import Event from './components/event/event';
 import SideDrawer from './components/layout/sideDrawer/sideDrawer';
 import Log from './components/log/log';
+import Ban from './components/ban/ban';
 
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
@@ -47,6 +48,7 @@ class App extends Component {
             <Route path='/events' component={Event} />
             <Route path='/' exact component={Graph} />
             <Route path='/logs' component={Log} />
+            <Route path='/ban' component={Ban} />
           </Switch>
         </div>
       </Router>

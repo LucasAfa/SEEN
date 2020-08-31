@@ -137,6 +137,7 @@ function toData(data) {
                     parent: aux,
                     apmac: Ap.mac,
                     mac: assoc.mac,
+                    ip: assoc.ip,
                     radius: 30,
                     color: '001484',
                     status: 'Normal',
@@ -312,6 +313,8 @@ class Graph extends Component {
                                 title: 'Ban',
                                 action: function(d) {
                                     apis.editdevice({"dmac":d.mac,"ban":true,"apmac":d.apmac})
+                                    apis.insertBan({"mac":d.mac,"ban":true,"ip":d.ip,"dispositiveType":d.type})
+                                    
                                 }
                             },
                             {

@@ -26,6 +26,11 @@ const sideDrawer = props => {
                         Logs
                 </a>
                 </li>
+                <li className='links'>
+                    <a className='list-item' href='/ban'>
+                        Bans
+                </a>
+                </li>
             </ul>
         </nav>)
 };
